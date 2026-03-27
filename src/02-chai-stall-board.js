@@ -65,17 +65,58 @@
  *   // => "cutting" (cheapest chai gets "cheapest" class)
  */
 export function updateChaiPrice(document, chaiType, newPrice) {
-  // Your code here
+  if (typeof chaiType !== "string" || chaiType.trim() === "") return false
+  if (typeof newPrice !== "number" || newPrice <= 0) return false
+
+  const el = document.getElementById(`price-${chaiType}`)
+  if (!el) return false
+
+  el.textContent = `₹${newPrice}`
+  return true
 }
 
 export function getChaiPrice(document, chaiType) {
-  // Your code here
+  if (typeof chaiType !== "string" || chaiType.trim() === "") return null
+
+  const el = document.getElementById(`price-${chaiType}`)
+  if (!el) return null
+
+  const value = el.textContent.replace("₹", "")
+  return Number(value)
 }
 
 export function updateStallName(document, newName) {
-  // Your code here
+  if (typeof newName !== "string" || newName.trim() === "") return null
+
+  const el = document.querySelector(".stall-name")
+  if (!el) return null
+
+  const oldName = el.textContent
+  el.textContent = newName
+  return oldName
 }
 
 export function highlightCheapestChai(document) {
-  // Your code here
+  const items = document.querySelectorAll(".chai-price")
+  if (!items || items.length === 0) return null
+
+  let cheapestEl = null
+  let minPrice = Infinity
+
+  items.forEach(el => {
+    const price = Number(el.textContent.replace("₹", ""))
+    if (price < minPrice) {
+      minPrice = price
+      cheapestEl = el
+    }
+  })
+
+  items.forEach(el => el.classList.remove("cheapest"))
+
+  if (cheapestEl) {
+    cheapestEl.classList.add("cheapest")
+    return cheapestEl.getAttribute("data-chai")
+  }
+
+  return null
 }
